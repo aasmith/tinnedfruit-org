@@ -1,0 +1,208 @@
+<head>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+<script>
+
+  // Code for making requests to flickr.
+
+  //var key = "14eaad2aa1b12b907d8f602cbb620e28";
+  var key = "70f0e50091c7d187424eb680b0d76662";
+
+  function callFlickr(method, params) {
+    var head = document.getElementsByTagName("head")[0];
+
+    var newScript = document.createElement('script');
+    newScript.type = 'text/javascript';
+    newScript.onload = function() { head.removeChild(newScript) };
+    newScript.src = 'http://api.flickr.com/services/rest?format=json&method=' + method + '&api_key=' + key + '&' + queryUrl(params);
+    head.appendChild(newScript);
+  }
+
+  function queryUrl(params) {
+    var url = [];
+
+    for (var name in params) {
+      url.push(name + "=" + params[name]);
+    };
+
+    return url.join("&");
+  }
+
+  function jsonFlickrApi(flickr) {
+    //if (window.console) console.log("Recvd!");
+    //if (window.console) console.log(o);
+
+    // todo check type of response
+    // assume search result for now.
+
+    var photos = flickr.photos.photo;
+
+    handlePhotos(photos);
+  }
+
+  ///////
+
+  function start() {
+    callFlickr("flickr.photos.search", {user_id: "40165565@N03", extras: "description,url_s,url_m,url_z,url_l,url_o,owner_name,date_taken"});
+  }
+
+  // callback once photos have been fetched for us to process.
+  function handlePhotos(photos) {
+    updateFrame(photos, 0);
+  }
+
+  function updateFrame(photos, index, timeoutId) {
+    if (index < 0 || index >= photos.length) {
+      return;
+    }
+
+    var photo = photos[index];
+
+    coverOrContain(photo);
+
+    setImage("large", photo.url_l);
+
+    if (!hideDetail()) {
+      setImage("original", photo.url_o);
+    }
+
+    $("#label h1").text(photo.title || "Untitled")
+    $("#label > p").html(photo.description._content || "&nbsp;")
+
+    if (!hideCaptions()) {
+      $("#label").fadeIn('slow');
+    }
+
+    clearTimeout(timeoutId);
+    var timeoutId = setTimeout(function(){$("#label").fadeOut()}, $("#label > p").text().length < 10 ? 3500 : 10000)
+
+    $(".frame").unbind("click").click(function(){
+      updateFrame(photos, index + 1, timeoutId);
+    })
+
+    $(document).unbind("keydown").keydown(function(e){
+      // left; go back.
+      if (e.keyCode == 37) { 
+        updateFrame(photos, index - 1, timeoutId);
+        return false;
+      }
+
+      // right, advance.
+      if (e.keyCode == 39) {
+        updateFrame(photos, index + 1, timeoutId);
+        return false;
+      }
+    });
+
+    $(window).unbind("resize").resize(function(){
+      coverOrContain(photo);
+    });
+  }
+
+  function coverOrContain(photo) {
+    var landscape = (photo.width_o / photo.height_o) > 1.0;
+    var portrait = !landscape;
+
+    var viewportLandscape = ($(window).width() / $(window).height()) > 1.0;
+    var viewportPortrait = !viewportLandscape;
+
+    if      (viewportLandscape && landscape) { cover();   }
+    else if (viewportPortrait  && portrait)  { cover();   }
+    else                                     { contain(); }
+  }
+
+  function cover() {
+    $(".frame").addClass("cover");
+    $(".frame").removeClass("contain");
+  }
+
+  function contain() {
+    $(".frame").addClass("contain");
+    $(".frame").removeClass("cover");
+  }
+
+  function setImage(size, url) {
+    var frame = $('#' + size);
+
+    frame.css({
+      backgroundImage: "url(" + url + ")",
+      backgroundAttachment: "fixed",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center center"
+    });
+  }
+
+  function hideCaptions() {
+    return window.location.search.indexOf("captions=0") > 0;
+  }
+
+  function hideDetail() {
+    return window.location.search.indexOf("detail=0") > 0;
+  }
+
+  $(function(){
+    $("#label").hide();
+    start();
+  });
+
+</script>
+
+<style>
+  html, body {
+    margin:0;
+    padding:0;
+    background-color: #000;
+  }
+
+  .frame { 
+    width: 100%;
+    height: 100%;
+    margin:0;
+    padding:0;
+    background-color:transparent;
+    position:fixed;
+  }
+
+  .cover {
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+  }
+
+  .contain {
+    -webkit-background-size: contain;
+    -moz-background-size: contain;
+    -o-background-size: contain;
+    background-size: contain;
+  }
+
+  #label {
+    background-color: #333;
+    color: white;
+    opacity: 0.5;
+    position:fixed;
+    bottom:0;
+    right:0;
+    padding: 10px 50px 40px 20px;
+    width: 450px;
+
+    -moz-border-top-left-radius: 15px;
+    border-top-left-radius: 15px;
+  }
+
+  #label a { color: white; }
+
+</style>
+
+</head>
+
+<body>
+  <div id="large"    class="frame"> </div>
+  <div id="original" class="frame"> </div>
+
+  <div id="label">
+    <h1>...</h1>
+    <p></p>
+  </div>
+</body>
+

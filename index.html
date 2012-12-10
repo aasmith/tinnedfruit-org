@@ -1,0 +1,876 @@
+<head>
+  <meta name="google-site-verification" content="40B9VxKimS6IgUo83yjAJ7PvTbG1whh6A374HHD3Y4E" />
+
+  <meta name="viewport" content="width=800, height=device-height"/>
+
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+<script>
+
+  // Code for making requests to flickr.
+
+  var key = "70f0e50091c7d187424eb680b0d76662";
+
+  function callFlickr(method, params) {
+    var head = document.getElementsByTagName("head")[0];
+
+    var newScript = document.createElement('script');
+    newScript.type = 'text/javascript';
+    newScript.onload = function() { head.removeChild(newScript) };
+    newScript.src = 'http://api.flickr.com/services/rest?format=json&method=' + method + '&api_key=' + key + '&' + queryUrl(params);
+    head.appendChild(newScript);
+  }
+
+  function queryUrl(params) {
+    var url = [];
+
+    for (var name in params) {
+      url.push(name + "=" + params[name]);
+    };
+
+    return url.join("&");
+  }
+
+  function jsonFlickrApi(flickr) {
+    var photos = flickr.photos.photo;
+    handlePhotos(photos);
+  }
+
+  ///////
+
+  function start() {
+    markVisibleDivs();
+    placeTinnedfruit();
+    callFlickr("flickr.photos.search", {user_id: "40165565@N03", extras: "url_sq", per_page: 400});
+  }
+
+  function handlePhotos(photos) {
+
+    // always randomize!
+    if (true || window.location.search.match("rand")) {
+      var divs = $("div.visible:not(.skip)").sort(function(a,b) { return Math.random() > 0.5 ? 1 : -1 } );
+    }
+    else {
+      var divs = $("div.visible:not(.skip)");
+    }
+
+    divs.each(function(i,e){
+      $(e).css({backgroundImage: "url("+photos[i].url_sq+")" }).attr({title: photos[i].title || "Untitled"});
+    });
+
+  }
+
+  // find strip of last visible blocks on row b,
+  // and place tinnedfruit.org title.
+  function placeTinnedfruit() {
+    var rowB = $("div.visible.b");
+    var blocks = rowB.slice(-6); // 6 visible blocks off the right side.
+
+    blocks.first().addClass("title").text("tinnedfruit.org");
+    blocks.addClass("skip");
+
+    $(".b.skip:not(.title)").css({"z-index":-50});
+  }
+
+  function markVisibleDivs() {
+    var h = $(window).height();
+    var w = $(window).width();
+
+    $("div").each(function(i,e){ inViewport(e,h,w) ? $(e).addClass("visible") : $(e).removeClass("visible") })
+  }
+
+  function inViewport(element, windowHeight, windowWidth) {
+    var pos = $(element).position();
+
+    return pos.left < windowWidth && pos.top < windowHeight;
+  }
+
+  $(function(){
+    start();
+  });
+</script>
+
+<style>
+body {margin:0;padding:0;background-color:black;color:#aaa}
+div { position:fixed; width:75px;height:75px; }
+a {color:#aaa}
+
+/*
+c="a";sz=75;q=25;puts (0..sz*q-1).step(sz).map{|n| s = ".#{c} { top: #{n}px; }"; c.succ!; s }
+*/
+
+.a { top: 0px; }
+.b { top: 75px; }
+.c { top: 150px; }
+.d { top: 225px; }
+.e { top: 300px; }
+.f { top: 375px; }
+.g { top: 450px; }
+.h { top: 525px; }
+.i { top: 600px; }
+.j { top: 675px; }
+.k { top: 750px; }
+.l { top: 825px; }
+.m { top: 900px; }
+.n { top: 975px; }
+.o { top: 1050px; }
+.p { top: 1125px; }
+.q { top: 1200px; }
+.r { top: 1275px; }
+.s { top: 1350px; }
+.t { top: 1425px; }
+.u { top: 1500px; }
+.v { top: 1575px; }
+.w { top: 1650px; }
+.x { top: 1725px; }
+.y { top: 1800px; }
+
+/*
+c="1";sz=75;q=25;puts (0..sz*q-1).step(sz).map{|n| s = "._#{c} { left: #{n}px; }"; c.succ!; s }
+*/
+
+._1 { left: 0px; }
+._2 { left: 75px; }
+._3 { left: 150px; }
+._4 { left: 225px; }
+._5 { left: 300px; }
+._6 { left: 375px; }
+._7 { left: 450px; }
+._8 { left: 525px; }
+._9 { left: 600px; }
+._10 { left: 675px; }
+._11 { left: 750px; }
+._12 { left: 825px; }
+._13 { left: 900px; }
+._14 { left: 975px; }
+._15 { left: 1050px; }
+._16 { left: 1125px; }
+._17 { left: 1200px; }
+._18 { left: 1275px; }
+._19 { left: 1350px; }
+._20 { left: 1425px; }
+._21 { left: 1500px; }
+._22 { left: 1575px; }
+._23 { left: 1650px; }
+._24 { left: 1725px; }
+._25 { left: 1800px; }
+
+.title { font-family:Cambria,serif;padding-left:17px;line-height:71px;font-size:53px; }
+.d._1  { width:150px; font-family:Calibri,sans-serif;padding:10px;font-size:14px;overflow:hidden;box-sizing:border-box; }
+.d._2  { width:0; }
+
+p {padding:0;margin:0;margin-bottom:12px;}
+
+.skip{background-color:#333;}
+
+</style>
+
+</head>
+
+<body>
+
+<!--
+o=[];col=25;row=25;ci="a";ri="1";col.times{|c| row.times{|r| s = %Q{<div class="#{ci} _#{ri}"></div>}; ri.succ!; o << s; }; ci.succ!; ri="1" };puts o
+-->
+
+<div class="a _1"></div>
+<div class="a _2"></div>
+<div class="a _3"></div>
+<div class="a _4"></div>
+<div class="a _5"></div>
+<div class="a _6"></div>
+<div class="a _7"></div>
+<div class="a _8"></div>
+<div class="a _9"></div>
+<div class="a _10"></div>
+<div class="a _11"></div>
+<div class="a _12"></div>
+<div class="a _13"></div>
+<div class="a _14"></div>
+<div class="a _15"></div>
+<div class="a _16"></div>
+<div class="a _17"></div>
+<div class="a _18"></div>
+<div class="a _19"></div>
+<div class="a _20"></div>
+<div class="a _21"></div>
+<div class="a _22"></div>
+<div class="a _23"></div>
+<div class="a _24"></div>
+<div class="a _25"></div>
+<div class="b _1"></div>
+<div class="b _2"></div>
+<div class="b _3"></div>
+<div class="b _4"></div>
+<div class="b _5"></div>
+<div class="b _6"></div>
+<div class="b _7"></div>
+<div class="b _8"></div>
+<div class="b _9"></div>
+<div class="b _10"></div>
+<div class="b _11"></div>
+<div class="b _12"></div>
+<div class="b _13"></div>
+<div class="b _14"></div>
+<div class="b _15"></div>
+<div class="b _16"></div>
+<div class="b _17"></div>
+<div class="b _18"></div>
+<div class="b _19"></div>
+<div class="b _20"></div>
+<div class="b _21"></div>
+<div class="b _22"></div>
+<div class="b _23"></div>
+<div class="b _24"></div>
+<div class="b _25"></div>
+<div class="c _1"></div>
+<div class="c _2"></div>
+<div class="c _3"></div>
+<div class="c _4"></div>
+<div class="c _5"></div>
+<div class="c _6"></div>
+<div class="c _7"></div>
+<div class="c _8"></div>
+<div class="c _9"></div>
+<div class="c _10"></div>
+<div class="c _11"></div>
+<div class="c _12"></div>
+<div class="c _13"></div>
+<div class="c _14"></div>
+<div class="c _15"></div>
+<div class="c _16"></div>
+<div class="c _17"></div>
+<div class="c _18"></div>
+<div class="c _19"></div>
+<div class="c _20"></div>
+<div class="c _21"></div>
+<div class="c _22"></div>
+<div class="c _23"></div>
+<div class="c _24"></div>
+<div class="c _25"></div>
+<div class="d _1 skip">
+  <p>by Andrew A Smith.</p>
+  <p>
+    see:
+    <a href="http://flickr.com./andrewasmith">flickr</a>,
+    <a href="http://github.com./aasmith">github</a>.
+  </p>
+</div>
+<div class="d _2 skip"></div>
+<div class="d _3"></div>
+<div class="d _4"></div>
+<div class="d _5"></div>
+<div class="d _6"></div>
+<div class="d _7"></div>
+<div class="d _8"></div>
+<div class="d _9"></div>
+<div class="d _10"></div>
+<div class="d _11"></div>
+<div class="d _12"></div>
+<div class="d _13"></div>
+<div class="d _14"></div>
+<div class="d _15"></div>
+<div class="d _16"></div>
+<div class="d _17"></div>
+<div class="d _18"></div>
+<div class="d _19"></div>
+<div class="d _20"></div>
+<div class="d _21"></div>
+<div class="d _22"></div>
+<div class="d _23"></div>
+<div class="d _24"></div>
+<div class="d _25"></div>
+<div class="e _1"></div>
+<div class="e _2"></div>
+<div class="e _3"></div>
+<div class="e _4"></div>
+<div class="e _5"></div>
+<div class="e _6"></div>
+<div class="e _7"></div>
+<div class="e _8"></div>
+<div class="e _9"></div>
+<div class="e _10"></div>
+<div class="e _11"></div>
+<div class="e _12"></div>
+<div class="e _13"></div>
+<div class="e _14"></div>
+<div class="e _15"></div>
+<div class="e _16"></div>
+<div class="e _17"></div>
+<div class="e _18"></div>
+<div class="e _19"></div>
+<div class="e _20"></div>
+<div class="e _21"></div>
+<div class="e _22"></div>
+<div class="e _23"></div>
+<div class="e _24"></div>
+<div class="e _25"></div>
+<div class="f _1"></div>
+<div class="f _2"></div>
+<div class="f _3"></div>
+<div class="f _4"></div>
+<div class="f _5"></div>
+<div class="f _6"></div>
+<div class="f _7"></div>
+<div class="f _8"></div>
+<div class="f _9"></div>
+<div class="f _10"></div>
+<div class="f _11"></div>
+<div class="f _12"></div>
+<div class="f _13"></div>
+<div class="f _14"></div>
+<div class="f _15"></div>
+<div class="f _16"></div>
+<div class="f _17"></div>
+<div class="f _18"></div>
+<div class="f _19"></div>
+<div class="f _20"></div>
+<div class="f _21"></div>
+<div class="f _22"></div>
+<div class="f _23"></div>
+<div class="f _24"></div>
+<div class="f _25"></div>
+<div class="g _1"></div>
+<div class="g _2"></div>
+<div class="g _3"></div>
+<div class="g _4"></div>
+<div class="g _5"></div>
+<div class="g _6"></div>
+<div class="g _7"></div>
+<div class="g _8"></div>
+<div class="g _9"></div>
+<div class="g _10"></div>
+<div class="g _11"></div>
+<div class="g _12"></div>
+<div class="g _13"></div>
+<div class="g _14"></div>
+<div class="g _15"></div>
+<div class="g _16"></div>
+<div class="g _17"></div>
+<div class="g _18"></div>
+<div class="g _19"></div>
+<div class="g _20"></div>
+<div class="g _21"></div>
+<div class="g _22"></div>
+<div class="g _23"></div>
+<div class="g _24"></div>
+<div class="g _25"></div>
+<div class="h _1"></div>
+<div class="h _2"></div>
+<div class="h _3"></div>
+<div class="h _4"></div>
+<div class="h _5"></div>
+<div class="h _6"></div>
+<div class="h _7"></div>
+<div class="h _8"></div>
+<div class="h _9"></div>
+<div class="h _10"></div>
+<div class="h _11"></div>
+<div class="h _12"></div>
+<div class="h _13"></div>
+<div class="h _14"></div>
+<div class="h _15"></div>
+<div class="h _16"></div>
+<div class="h _17"></div>
+<div class="h _18"></div>
+<div class="h _19"></div>
+<div class="h _20"></div>
+<div class="h _21"></div>
+<div class="h _22"></div>
+<div class="h _23"></div>
+<div class="h _24"></div>
+<div class="h _25"></div>
+<div class="i _1"></div>
+<div class="i _2"></div>
+<div class="i _3"></div>
+<div class="i _4"></div>
+<div class="i _5"></div>
+<div class="i _6"></div>
+<div class="i _7"></div>
+<div class="i _8"></div>
+<div class="i _9"></div>
+<div class="i _10"></div>
+<div class="i _11"></div>
+<div class="i _12"></div>
+<div class="i _13"></div>
+<div class="i _14"></div>
+<div class="i _15"></div>
+<div class="i _16"></div>
+<div class="i _17"></div>
+<div class="i _18"></div>
+<div class="i _19"></div>
+<div class="i _20"></div>
+<div class="i _21"></div>
+<div class="i _22"></div>
+<div class="i _23"></div>
+<div class="i _24"></div>
+<div class="i _25"></div>
+<div class="j _1"></div>
+<div class="j _2"></div>
+<div class="j _3"></div>
+<div class="j _4"></div>
+<div class="j _5"></div>
+<div class="j _6"></div>
+<div class="j _7"></div>
+<div class="j _8"></div>
+<div class="j _9"></div>
+<div class="j _10"></div>
+<div class="j _11"></div>
+<div class="j _12"></div>
+<div class="j _13"></div>
+<div class="j _14"></div>
+<div class="j _15"></div>
+<div class="j _16"></div>
+<div class="j _17"></div>
+<div class="j _18"></div>
+<div class="j _19"></div>
+<div class="j _20"></div>
+<div class="j _21"></div>
+<div class="j _22"></div>
+<div class="j _23"></div>
+<div class="j _24"></div>
+<div class="j _25"></div>
+<div class="k _1"></div>
+<div class="k _2"></div>
+<div class="k _3"></div>
+<div class="k _4"></div>
+<div class="k _5"></div>
+<div class="k _6"></div>
+<div class="k _7"></div>
+<div class="k _8"></div>
+<div class="k _9"></div>
+<div class="k _10"></div>
+<div class="k _11"></div>
+<div class="k _12"></div>
+<div class="k _13"></div>
+<div class="k _14"></div>
+<div class="k _15"></div>
+<div class="k _16"></div>
+<div class="k _17"></div>
+<div class="k _18"></div>
+<div class="k _19"></div>
+<div class="k _20"></div>
+<div class="k _21"></div>
+<div class="k _22"></div>
+<div class="k _23"></div>
+<div class="k _24"></div>
+<div class="k _25"></div>
+<div class="l _1"></div>
+<div class="l _2"></div>
+<div class="l _3"></div>
+<div class="l _4"></div>
+<div class="l _5"></div>
+<div class="l _6"></div>
+<div class="l _7"></div>
+<div class="l _8"></div>
+<div class="l _9"></div>
+<div class="l _10"></div>
+<div class="l _11"></div>
+<div class="l _12"></div>
+<div class="l _13"></div>
+<div class="l _14"></div>
+<div class="l _15"></div>
+<div class="l _16"></div>
+<div class="l _17"></div>
+<div class="l _18"></div>
+<div class="l _19"></div>
+<div class="l _20"></div>
+<div class="l _21"></div>
+<div class="l _22"></div>
+<div class="l _23"></div>
+<div class="l _24"></div>
+<div class="l _25"></div>
+<div class="m _1"></div>
+<div class="m _2"></div>
+<div class="m _3"></div>
+<div class="m _4"></div>
+<div class="m _5"></div>
+<div class="m _6"></div>
+<div class="m _7"></div>
+<div class="m _8"></div>
+<div class="m _9"></div>
+<div class="m _10"></div>
+<div class="m _11"></div>
+<div class="m _12"></div>
+<div class="m _13"></div>
+<div class="m _14"></div>
+<div class="m _15"></div>
+<div class="m _16"></div>
+<div class="m _17"></div>
+<div class="m _18"></div>
+<div class="m _19"></div>
+<div class="m _20"></div>
+<div class="m _21"></div>
+<div class="m _22"></div>
+<div class="m _23"></div>
+<div class="m _24"></div>
+<div class="m _25"></div>
+<div class="n _1"></div>
+<div class="n _2"></div>
+<div class="n _3"></div>
+<div class="n _4"></div>
+<div class="n _5"></div>
+<div class="n _6"></div>
+<div class="n _7"></div>
+<div class="n _8"></div>
+<div class="n _9"></div>
+<div class="n _10"></div>
+<div class="n _11"></div>
+<div class="n _12"></div>
+<div class="n _13"></div>
+<div class="n _14"></div>
+<div class="n _15"></div>
+<div class="n _16"></div>
+<div class="n _17"></div>
+<div class="n _18"></div>
+<div class="n _19"></div>
+<div class="n _20"></div>
+<div class="n _21"></div>
+<div class="n _22"></div>
+<div class="n _23"></div>
+<div class="n _24"></div>
+<div class="n _25"></div>
+<div class="o _1"></div>
+<div class="o _2"></div>
+<div class="o _3"></div>
+<div class="o _4"></div>
+<div class="o _5"></div>
+<div class="o _6"></div>
+<div class="o _7"></div>
+<div class="o _8"></div>
+<div class="o _9"></div>
+<div class="o _10"></div>
+<div class="o _11"></div>
+<div class="o _12"></div>
+<div class="o _13"></div>
+<div class="o _14"></div>
+<div class="o _15"></div>
+<div class="o _16"></div>
+<div class="o _17"></div>
+<div class="o _18"></div>
+<div class="o _19"></div>
+<div class="o _20"></div>
+<div class="o _21"></div>
+<div class="o _22"></div>
+<div class="o _23"></div>
+<div class="o _24"></div>
+<div class="o _25"></div>
+<div class="p _1"></div>
+<div class="p _2"></div>
+<div class="p _3"></div>
+<div class="p _4"></div>
+<div class="p _5"></div>
+<div class="p _6"></div>
+<div class="p _7"></div>
+<div class="p _8"></div>
+<div class="p _9"></div>
+<div class="p _10"></div>
+<div class="p _11"></div>
+<div class="p _12"></div>
+<div class="p _13"></div>
+<div class="p _14"></div>
+<div class="p _15"></div>
+<div class="p _16"></div>
+<div class="p _17"></div>
+<div class="p _18"></div>
+<div class="p _19"></div>
+<div class="p _20"></div>
+<div class="p _21"></div>
+<div class="p _22"></div>
+<div class="p _23"></div>
+<div class="p _24"></div>
+<div class="p _25"></div>
+<div class="q _1"></div>
+<div class="q _2"></div>
+<div class="q _3"></div>
+<div class="q _4"></div>
+<div class="q _5"></div>
+<div class="q _6"></div>
+<div class="q _7"></div>
+<div class="q _8"></div>
+<div class="q _9"></div>
+<div class="q _10"></div>
+<div class="q _11"></div>
+<div class="q _12"></div>
+<div class="q _13"></div>
+<div class="q _14"></div>
+<div class="q _15"></div>
+<div class="q _16"></div>
+<div class="q _17"></div>
+<div class="q _18"></div>
+<div class="q _19"></div>
+<div class="q _20"></div>
+<div class="q _21"></div>
+<div class="q _22"></div>
+<div class="q _23"></div>
+<div class="q _24"></div>
+<div class="q _25"></div>
+<div class="r _1"></div>
+<div class="r _2"></div>
+<div class="r _3"></div>
+<div class="r _4"></div>
+<div class="r _5"></div>
+<div class="r _6"></div>
+<div class="r _7"></div>
+<div class="r _8"></div>
+<div class="r _9"></div>
+<div class="r _10"></div>
+<div class="r _11"></div>
+<div class="r _12"></div>
+<div class="r _13"></div>
+<div class="r _14"></div>
+<div class="r _15"></div>
+<div class="r _16"></div>
+<div class="r _17"></div>
+<div class="r _18"></div>
+<div class="r _19"></div>
+<div class="r _20"></div>
+<div class="r _21"></div>
+<div class="r _22"></div>
+<div class="r _23"></div>
+<div class="r _24"></div>
+<div class="r _25"></div>
+<div class="s _1"></div>
+<div class="s _2"></div>
+<div class="s _3"></div>
+<div class="s _4"></div>
+<div class="s _5"></div>
+<div class="s _6"></div>
+<div class="s _7"></div>
+<div class="s _8"></div>
+<div class="s _9"></div>
+<div class="s _10"></div>
+<div class="s _11"></div>
+<div class="s _12"></div>
+<div class="s _13"></div>
+<div class="s _14"></div>
+<div class="s _15"></div>
+<div class="s _16"></div>
+<div class="s _17"></div>
+<div class="s _18"></div>
+<div class="s _19"></div>
+<div class="s _20"></div>
+<div class="s _21"></div>
+<div class="s _22"></div>
+<div class="s _23"></div>
+<div class="s _24"></div>
+<div class="s _25"></div>
+<div class="t _1"></div>
+<div class="t _2"></div>
+<div class="t _3"></div>
+<div class="t _4"></div>
+<div class="t _5"></div>
+<div class="t _6"></div>
+<div class="t _7"></div>
+<div class="t _8"></div>
+<div class="t _9"></div>
+<div class="t _10"></div>
+<div class="t _11"></div>
+<div class="t _12"></div>
+<div class="t _13"></div>
+<div class="t _14"></div>
+<div class="t _15"></div>
+<div class="t _16"></div>
+<div class="t _17"></div>
+<div class="t _18"></div>
+<div class="t _19"></div>
+<div class="t _20"></div>
+<div class="t _21"></div>
+<div class="t _22"></div>
+<div class="t _23"></div>
+<div class="t _24"></div>
+<div class="t _25"></div>
+<div class="u _1"></div>
+<div class="u _2"></div>
+<div class="u _3"></div>
+<div class="u _4"></div>
+<div class="u _5"></div>
+<div class="u _6"></div>
+<div class="u _7"></div>
+<div class="u _8"></div>
+<div class="u _9"></div>
+<div class="u _10"></div>
+<div class="u _11"></div>
+<div class="u _12"></div>
+<div class="u _13"></div>
+<div class="u _14"></div>
+<div class="u _15"></div>
+<div class="u _16"></div>
+<div class="u _17"></div>
+<div class="u _18"></div>
+<div class="u _19"></div>
+<div class="u _20"></div>
+<div class="u _21"></div>
+<div class="u _22"></div>
+<div class="u _23"></div>
+<div class="u _24"></div>
+<div class="u _25"></div>
+<div class="v _1"></div>
+<div class="v _2"></div>
+<div class="v _3"></div>
+<div class="v _4"></div>
+<div class="v _5"></div>
+<div class="v _6"></div>
+<div class="v _7"></div>
+<div class="v _8"></div>
+<div class="v _9"></div>
+<div class="v _10"></div>
+<div class="v _11"></div>
+<div class="v _12"></div>
+<div class="v _13"></div>
+<div class="v _14"></div>
+<div class="v _15"></div>
+<div class="v _16"></div>
+<div class="v _17"></div>
+<div class="v _18"></div>
+<div class="v _19"></div>
+<div class="v _20"></div>
+<div class="v _21"></div>
+<div class="v _22"></div>
+<div class="v _23"></div>
+<div class="v _24"></div>
+<div class="v _25"></div>
+<div class="w _1"></div>
+<div class="w _2"></div>
+<div class="w _3"></div>
+<div class="w _4"></div>
+<div class="w _5"></div>
+<div class="w _6"></div>
+<div class="w _7"></div>
+<div class="w _8"></div>
+<div class="w _9"></div>
+<div class="w _10"></div>
+<div class="w _11"></div>
+<div class="w _12"></div>
+<div class="w _13"></div>
+<div class="w _14"></div>
+<div class="w _15"></div>
+<div class="w _16"></div>
+<div class="w _17"></div>
+<div class="w _18"></div>
+<div class="w _19"></div>
+<div class="w _20"></div>
+<div class="w _21"></div>
+<div class="w _22"></div>
+<div class="w _23"></div>
+<div class="w _24"></div>
+<div class="w _25"></div>
+<div class="x _1"></div>
+<div class="x _2"></div>
+<div class="x _3"></div>
+<div class="x _4"></div>
+<div class="x _5"></div>
+<div class="x _6"></div>
+<div class="x _7"></div>
+<div class="x _8"></div>
+<div class="x _9"></div>
+<div class="x _10"></div>
+<div class="x _11"></div>
+<div class="x _12"></div>
+<div class="x _13"></div>
+<div class="x _14"></div>
+<div class="x _15"></div>
+<div class="x _16"></div>
+<div class="x _17"></div>
+<div class="x _18"></div>
+<div class="x _19"></div>
+<div class="x _20"></div>
+<div class="x _21"></div>
+<div class="x _22"></div>
+<div class="x _23"></div>
+<div class="x _24"></div>
+<div class="x _25"></div>
+<div class="y _1"></div>
+<div class="y _2"></div>
+<div class="y _3"></div>
+<div class="y _4"></div>
+<div class="y _5"></div>
+<div class="y _6"></div>
+<div class="y _7"></div>
+<div class="y _8"></div>
+<div class="y _9"></div>
+<div class="y _10"></div>
+<div class="y _11"></div>
+<div class="y _12"></div>
+<div class="y _13"></div>
+<div class="y _14"></div>
+<div class="y _15"></div>
+<div class="y _16"></div>
+<div class="y _17"></div>
+<div class="y _18"></div>
+<div class="y _19"></div>
+<div class="y _20"></div>
+<div class="y _21"></div>
+<div class="y _22"></div>
+<div class="y _23"></div>
+<div class="y _24"></div>
+<div class="y _25"></div>
+
+<!-- SiteCatalyst code version: H.23.4.
+Copyright 1996-2011 Adobe, Inc. All Rights Reserved
+More info available at http://www.omniture.com -->
+<script language="JavaScript" type="text/javascript" src="http://tinnedfruit.org/s_code.js"></script>
+<script language="JavaScript" type="text/javascript"><!--
+
+/*
+ * Plugin: getQueryParam 2.3
+ */
+s.getQueryParam=new Function("p","d","u",""
++"var s=this,v='',i,t;d=d?d:'';u=u?u:(s.pageURL?s.pageURL:s.wd.locati"
++"on);if(u=='f')u=s.gtfs().location;while(p){i=p.indexOf(',');i=i<0?p"
++".length:i;t=s.p_gpv(p.substring(0,i),u+'');if(t){t=t.indexOf('#')>-"
++"1?t.substring(0,t.indexOf('#')):t;}if(t)v+=v?d+t:t;p=p.substring(i="
++"=p.length?i:i+1)}return v");
+s.p_gpv=new Function("k","u",""
++"var s=this,v='',i=u.indexOf('?'),q;if(k&&i>-1){q=u.substring(i+1);v"
++"=s.pt(q,'&','p_gvf',k)}return v");
+s.p_gvf=new Function("t","k",""
++"if(t){var s=this,i=t.indexOf('='),p=i<0?t:t.substring(0,i),v=i<0?'T"
++"rue':t.substring(i+1);if(p.toLowerCase()==k.toLowerCase())return s."
++"epa(v)}return ''");
+
+
+  var s_doPlugins = function(x) { 
+    s.eVar1 = s.getQueryParam("adid");
+  }
+
+  /* You may give each page an identifying name, server, and channel on
+     the next lines. */
+s.pageName="frontpage"
+s.server="heroku"
+s.channel=""
+s.pageType=""
+s.prop1=""
+s.prop2=""
+s.prop3=""
+s.prop4=""
+s.prop5=""
+/* Conversion Variables */
+s.campaign=""
+s.state=""
+s.zip=""
+s.events=""
+s.products=""
+s.purchaseID=""
+s.eVar1=""
+s.eVar2=""
+s.eVar3=""
+s.eVar4=""
+s.eVar5=""
+
+s.doPlugins = s_doPlugins
+s.usePlugins = true
+
+/************* DO NOT ALTER ANYTHING BELOW THIS LINE ! **************/
+var s_code=s.t();if(s_code)document.write(s_code)//--></script>
+<script language="JavaScript" type="text/javascript"><!--
+  if(navigator.appVersion.indexOf('MSIE')>=0)document.write(unescape('%3C')+'\!-'+'-')
+  //--></script><noscript><img src="http://fishnchips.112.2o7.net/b/ss/fnc-tinnedfruit/1/H.23.4--NS/0"
+  height="1" width="1" border="0" alt="" /></noscript><!--/DO NOT REMOVE/-->
+<!-- End SiteCatalyst code version: H.23.4. -->
+
+<img width="1" height="1"
+  src="http://ib.adnxs.com/getuid?http://mapper.fishnchips.112.2o7.net:4567/map?anuid=$UID">
+
+</body>
+
