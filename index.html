@@ -17,7 +17,7 @@
     var newScript = document.createElement('script');
     newScript.type = 'text/javascript';
     newScript.onload = function() { head.removeChild(newScript) };
-    newScript.src = 'http://api.flickr.com/services/rest?format=json&method=' + method + '&api_key=' + key + '&' + queryUrl(params);
+    newScript.src = 'https://api.flickr.com/services/rest?format=json&method=' + method + '&api_key=' + key + '&' + queryUrl(params);
     head.appendChild(newScript);
   }
 
