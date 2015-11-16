@@ -73,7 +73,7 @@
     }
 
     clearTimeout(timeoutId);
-    var timeoutId = setTimeout(function(){$("#label").fadeOut()}, $("#label > p").text().length < 10 ? 3500 : 10000)
+    var timeoutId = setTimeout(function(){$("#label").fadeOut()}, $("#label > p").text().length < 10 ? 2500 : 6000)
 
     $(".frame").unbind("click").click(function(){
       updateFrame(photos, index + 1, timeoutId);
@@ -177,20 +177,24 @@
   }
 
   #label {
-    background-color: #333;
-    color: white;
-    opacity: 0.5;
+    background-color: rgba(0,0,0,0.3);
+    color: #ddd;
     position:fixed;
     bottom:0;
     right:0;
     padding: 10px 50px 40px 20px;
     width: 450px;
-
-    -moz-border-top-left-radius: 15px;
-    border-top-left-radius: 15px;
+    font-size: 1.2rem;
   }
 
   #label a { color: white; }
+  
+  #label h1 {
+    font-size: 2rem;
+    color: white;
+    font-family: sans-serif;
+    font-weight: normal;
+  }
 
 </style>
 
